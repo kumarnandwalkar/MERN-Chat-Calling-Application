@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    env_file: ./server/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mern_chat
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    command: npm run dev
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    ports:
+      - "8080:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5000
+      - VITE_SOCKET_URL=http://localhost:5000
+    depends_on:
+      - server
+volumes:
+  mongo_data:

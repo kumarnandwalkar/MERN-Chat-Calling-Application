@@ -1,0 +1,9 @@
+node_modules/
+.env
+server/.env
+client/.env
+/dist/
+/build/
+.DS_Store
+npm-debug.log*
+yarn-error.log*

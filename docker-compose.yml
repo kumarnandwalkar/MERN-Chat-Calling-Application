@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+  server:
+    build: ./server
+    env_file: ./server/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mern_chat
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+  client:
+    build: ./client
+    ports:
+      - "8080:80"
+    depends_on:
+      - server
+volumes:
+  mongo_data:
