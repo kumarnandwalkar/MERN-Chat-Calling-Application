@@ -1,12 +1,28 @@
-FROM node:20-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+# Stage 1: Build the React application
+FROM node:18-alpine AS build
 
-FROM nginx:alpine
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+# --- THIS IS THE KEY PART ---
+# 1. Declare the build arguments that we expect from docker-compose.yml
+ARG VITE_API_URL
+ARG VITE_SOCKET_URL
+
+# 2. Use the arguments in the build command
+RUN VITE_API_URL=${VITE_API_URL} VITE_SOCKET_URL=${VITE_SOCKET_URL} npm run build
+
+# Stage 2: Serve the static files with Nginx
+FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy nginx config if you have one
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
-CMD ["nginx","-g","daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
