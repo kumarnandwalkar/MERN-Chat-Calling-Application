@@ -1,24 +1,38 @@
-version: "3.9"
+# version is obsolete and can be removed
 services:
   mongo:
     image: mongo:6
     restart: unless-stopped
     volumes:
       - mongo_data:/data/db
+
   server:
     build: ./server
-    env_file: ./server/.env
+    # env_file is removed
     environment:
+      # These variables are now passed directly to the running container
+      - PORT=5000
       - MONGO_URI=mongodb://mongo:27017/mern_chat
+      - JWT_SECRET=aDefaultSecretKeyForYourOrchestratorPleaseChange
+      - CORS_ORIGIN=http://localhost:8080
     ports:
       - "5000:5000"
     depends_on:
       - mongo
+
   client:
-    build: ./client
+    build:
+      context: ./client
+      # --- THIS IS THE KEY PART FOR THE FRONTEND ---
+      # 'args' are passed to the Dockerfile during the build process
+      args:
+        - VITE_API_URL=http://localhost:5000
+        - VITE_SOCKET_URL=http://localhost:5000
     ports:
-      - "8080:80"
+      # This assumes your production client Dockerfile serves on port 80
+      - "8080:80" 
     depends_on:
       - server
+
 volumes:
   mongo_data:
