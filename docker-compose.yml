@@ -26,8 +26,11 @@ services:
       # --- THIS IS THE KEY PART FOR THE FRONTEND ---
       # 'args' are passed to the Dockerfile during the build process
       args:
-        - VITE_API_URL=http://localhost:5000
-        - VITE_SOCKET_URL=http://localhost:5000
+        # - VITE_API_URL=http://localhost:5000
+        # - VITE_SOCKET_URL=http://localhost:5000
+        - VITE_API_URL=http://3.6.73.201:5000
+        - VITE_SOCKET_URL=http://3.6.73.201:5000
+        # to run on localhost comment out the localhost:5000 and comment the other one
     ports:
       # This assumes your production client Dockerfile serves on port 80
       - "8080:80" 
