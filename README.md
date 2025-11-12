@@ -36,7 +36,7 @@ docker compose up --build
 4. Open the app: `http://localhost:8080`
 
 - API: `http://localhost:5000`
-- WebSocket: `ws://localhost:5000` (managed internally by the app)
+- WebSocket: `ws://localhost:5000` (managed internally by the app).
 
 ## Environment Variables
 
