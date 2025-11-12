@@ -1,4 +1,5 @@
-# version is obsolete and can be removed
+# In MERN-Chat-Calling-Application/docker-compose.yaml
+
 services:
   mongo:
     image: mongo:6
@@ -8,33 +9,34 @@ services:
 
   server:
     build: ./server
-    # env_file is removed
     environment:
-      # These variables are now passed directly to the running container
       - PORT=5000
       - MONGO_URI=mongodb://mongo:27017/mern_chat
       - JWT_SECRET=aDefaultSecretKeyForYourOrchestratorPleaseChange
-      - CORS_ORIGIN=http://localhost:8080
-    ports:
-      - "5000:5000"
+      # CORS_ORIGIN is no longer needed, as Nginx makes it all one origin
+    # NO PORTS EXPOSED - Nginx handles all traffic
     depends_on:
       - mongo
 
   client:
     build:
       context: ./client
-      # --- THIS IS THE KEY PART FOR THE FRONTEND ---
-      # 'args' are passed to the Dockerfile during the build process
-      args:
-        # - VITE_API_URL=http://localhost:5000
-        # - VITE_SOCKET_URL=http://localhost:5000
-        - VITE_API_URL=http://3.6.73.201:5000
-        - VITE_SOCKET_URL=http://3.6.73.201:5000
-        # to run on localhost comment out the localhost:5000 and comment the other one
-    ports:
-      # This assumes your production client Dockerfile serves on port 80
-      - "8080:80" 
+      # NO ARGS NEEDED - The frontend will use relative paths
+    # NO PORTS EXPOSED
     depends_on:
+      - server
+
+  nginx:
+    image: nginx:stable-alpine
+    # Mount the config file you will create in the next step
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      # This is the ONLY port your app exposes to the world.
+      # Your orchestrator's 'openUrl' should point here.
+      - "8080:80"
+    depends_on:
+      - client
       - server
 
 volumes:
