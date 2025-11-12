@@ -320,3 +320,13 @@ This MERN stack application demonstrates modern web development practices includ
 - Privacy-focused data isolation
 
 The application is production-ready with proper security measures, scalable architecture, and comprehensive error handling. It serves as a solid foundation for real-time communication applications and can be extended with additional features as needed.
+
+in docker compose.yaml
+
+      args:
+        # - VITE_API_URL=http://localhost:5000
+        # - VITE_SOCKET_URL=http://localhost:5000
+        - VITE_API_URL=http://3.6.73.201:5000
+        - VITE_SOCKET_URL=http://3.6.73.201:5000
+        # to run on localhost comment out the localhost:5000 and comment the other one
+    ports:
