@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { getToken, clearToken } from '../store/auth.js';
 
-const baseURL = import.meta.env.VITE_API_URL || `${location.protocol}//${location.hostname}:5000`;
+// This is the only line you need to change.
+const baseURL = '/api';
 
 export const api = axios.create({ baseURL });
 
