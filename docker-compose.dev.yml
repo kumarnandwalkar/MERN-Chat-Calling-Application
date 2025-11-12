@@ -31,8 +31,10 @@ services:
     ports:
       - "8080:5173"
     environment:
-      - VITE_API_URL=http://localhost:5000
-      - VITE_SOCKET_URL=http://localhost:5000
+      # - VITE_API_URL=http://localhost:5000
+      # - VITE_SOCKET_URL=http://localhost:5000
+      - VITE_API_URL=http://3.6.73.201:5000
+      - VITE_SOCKET_URL=http://3.6.73.201:5000
     depends_on:
       - server
 volumes:
